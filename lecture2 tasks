@@ -1,0 +1,15 @@
+data = xlsread('EER_EPMRU_PF4_Y35NY_DPGm.xls','Data 1');
+year = data(a:b);
+a = 1;
+b = 12;
+for year = 1:374
+    avg(a:b)
+    a = sum(a + 12);
+    b = sum(b + 12);
+end
+    
+enddata = xlswrite('monthly_average_price.xlsx', yearlyaverages);
+
+function avg = average(x)
+avg = sum(x)/length(x);
+end
