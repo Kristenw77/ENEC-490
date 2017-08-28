@@ -1,16 +1,25 @@
 data = xlsread('EER_EPMRU_PF4_Y35NY_DPGm.xls','Data 1');
 
-a = 1;
-b = 12;
-year = data(a:b);
-for year = 1:374
-    avgerage(year)
-    a = sum(a + 12);
-    b = sum(b + 12);
-end
-    
-enddata = xlswrite('monthly_average_price.xlsx', yearlyaverages);
 
-function avg = average(x)
-avg = sum(x)/length(x);
+% first we need to find the row associated with the first month in 1987 -- the data actually starts in 1986, and we don't want to use that. 
+% If you don't know how to find that with code, you could figure it out by looking at your 'data' variable and at the original data. 
+first = 7
+
+% matrix of zeros -- where you'll put the results for 1987-2016
+yearlyaverages = zeros(30,1)
+
+for year = 1:30
+
+    % what are the correct indices? hint: you should use the variable 'first'
+    monthly_data = data(   :   );
+    
+    % takes the average of the data you just selected
+    yearlyaverages(i) = mean(monthly_data);
+    
 end
+
+dates = [1987:1:2016]';
+
+%write price data alongside years
+enddata = xlswrite('monthly_average_price.xlsx', [dates yearlyaverages]);
+
