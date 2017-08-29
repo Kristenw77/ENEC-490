@@ -1,42 +1,20 @@
 data = xlsread('EER_EPMRU_PF4_Y35NY_DPGm.xls','Data 1');
-
-
-% first we need to find the row associated with the first month in 1987 -- the data actually starts in 1986, and we don't want to use that. 
-% If you don't know how to find that with code, you could figure it out by looking at your 'data' variable and at the original data. 
-first = 7
-
-% matrix of zeros -- where you'll put the results for 1987-2016
-yearlyaverages = zeros(30,1)
-
-for year = 1:30
-
-    % what are the correct indices? hint: you should use the variable 'first'
-    monthly_data = data(   :   );
-    
-    % takes the average of the data you just selected
-    yearlyaverages(i) = mean(monthly_data);
-    
-end
-
-dates = [1987:1:2016]';
-
-%write price data alongside years
-enddata = xlswrite('monthly_average_price.xlsx', [dates yearlyaverages]);
-
-data = xlsread('EER_EPMRU_PF4_Y35NY_DPGm.xls','Data 1');
-yearlyaverages = zeros(30:1);
+% this was indexed incorrectly
+yearlyaverages = zeros(30,1);
 first = 7;
-twelth = 19;
-i = 1;
+% 7,8,9,...18 are 12 numbers (going to 19 gives you 13)
+twelth = 18;
 
 for year = 1:30
     monthly_data = data(first:twelth);
-    yearlyaverages(i) = mean(monthly_data);
+    % index using 'year' or 'i', but not both
+    yearlyaverages(year) = mean(monthly_data);
     first = first + 12;
     twelth = twelth + 12;
-    i = i +1;
+
 end
 
-dates = 1987:1:2016;
+% Take the 'transpose' of the vector using the ' symbol; this converts a row vector to a column vector
+dates = [1987:1:2016]';
 
 enddata = xlswrite('monthly_average_price.xlsx', [dates yearlyaverages]);
