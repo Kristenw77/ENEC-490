@@ -1,3 +1,4 @@
+
 function [m] = monthly_stats(d)
 
 matrix = zeros(12,2)
@@ -5,4 +6,6 @@ matrix = zeros(12,2)
         matrix(j,1) = mean(d(j,:))
         matrix(j,2) = std(d(j,:))
     end
+    
+  
 
