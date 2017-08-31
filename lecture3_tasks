@@ -1,15 +1,11 @@
 
-function [m] = monthly_stats(data)
+function [m] = monthly_stats(d)
 
-
-years = 1997:1:2016
 matrix = zeros(12,2)
-totalyears = length(data)/12
-start = find(years==2008)
-
-for i = start:totalyears
     for j = 1:12
-        matrix(j,1) = mean(j)
-        matrix(j,2) = std(j)
+        matrix(j,1) = mean(d(j,:))
+        matrix(j,2) = std(d(j,:))
     end
-end 
+    
+  
+
