@@ -7,5 +7,5 @@ matrix = zeros(12,2)
         matrix(j,2) = std(d(j,:))
     end
     
-  
+  % looks good, but wanted to see it with the Lecture 3 m-file (plotting histograms)
 
