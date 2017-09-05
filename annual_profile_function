@@ -1,0 +1,23 @@
+function [ m ] = annual_profile(data)
+
+num_data_points = length(data);
+years = floor(num_data_points/12);
+
+m = zeros(12,years);
+
+for i = 1:years
+    for j = 1:12
+        m(j,i) = data(i-1)*12+j;
+    end
+end
+%
+%new_years = 1997:1:2016;
+%start = find(new_years==2008);
+%in the lecture task it tells us we want only the data after 2008, so we
+%create the start variable
+
+%m = m(:,start:end);
+%just the colon means that in that dimension, take everything. 
+%you can just use "end" to index it to the very end
+
+end
