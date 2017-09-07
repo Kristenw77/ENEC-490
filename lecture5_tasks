@@ -1,0 +1,16 @@
+for i = window/2 + 1:num_hours-window/2
+    
+   
+    window_size = i-250:i+250;
+    window_mean = mean(window_size);
+    
+    window_std = std(window_size);
+    
+    if transformed_data(i) >= window_mean + 3*window_std | transformed_data(i) <= window_mean - 3*window_std
+        outliers(i) = 1;
+    else
+        outliers(i) = 0;
+    end
+    i = i + 500; 
+end
+find(outliers > 0)
