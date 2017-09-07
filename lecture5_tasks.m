@@ -21,14 +21,18 @@ find(outliers > 0)
 %%% Scatter Plot 
 days = length(transformed_data)/24;
 peak_demand = zeros(days,1);
-for i = 1:length(transformed_data)
-    peak = max(i,i+24);
+for i = 1:days
+
+    peak = max(transformed_data(i:i+23));
     peak_demand(i) = peak;
     i = i + 24;
     
 end 
 
-tempdata = csvread('tempdata.csv', 1, 1);
+%no header/text in excel file, so don't need to specify start cell; (1,1) actually translates to row 2, column 2 in Excel
+tempdata = csvread('tempdata.csv');
+% only use data (not dates)
+X= tempdata(:,2);
 X = tempdata;
 Y = peak_demand;
 scatter(X,Y)
