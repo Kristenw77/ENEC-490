@@ -14,3 +14,25 @@ for i = window/2 + 1:num_hours-window/2
     i = i + 500; 
 end
 find(outliers > 0)
+
+
+
+
+%%% Scatter Plot 
+days = length(transformed_data)/24;
+peak_demand = zeros(days,1);
+for i = 1:length(transformed_data)
+    peak = max(i,i+24);
+    peak_demand(i) = peak;
+    i = i + 24;
+    
+end 
+
+tempdata = csvread('tempdata.csv', 1, 1);
+X = tempdata;
+Y = peak_demand;
+scatter(X,Y)
+xlabel('Average Daily Temperatures','FontSize', 14)
+ylabel('Peak Demand','FontSize', 14)
+title('Average Daily Temperatures vs. Peak Demand', 'FontSize',14)
+
