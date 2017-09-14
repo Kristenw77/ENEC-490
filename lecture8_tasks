@@ -1,0 +1,83 @@
+%Lecture8
+
+%import relevant data 
+[data text combined] = xlsread('N3045US3m','Data 1','A4:B183');
+
+%histogram of 2002-2016 gas price data
+histogram(data); 
+
+%log transformation
+transformed_data = log(data);
+
+%histogram of log transformed data
+histogram(transformed_data); 
+xlabel('Log Natural Gas Price ($/MMBtu)','FontSize',14);
+ylabel('Frequency','FontSize',14);
+
+%number of years in dataset
+years = length(data)/12;
+
+%convert to 12 x N matrix
+monthly_matrix = vec2mat(transformed_data,12,years);
+
+% mean and standard deviation of log-transformed data by month
+stats = zeros(12,2);
+for i = 1:12
+    stats(i,1) = mean(monthly_matrix(i,:));
+    stats(i,2) = std(monthly_matrix(i,:));
+end
+
+%identify months
+months = {'Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'};
+
+figure; 
+hold on;
+%bin 'edges'- these tell you the size of each column in the HISTOGRAM
+edges = 0:0.5:30;
+%Matlab will automatically assign a new color to each new histogram in the
+%figure 
+%highest mean
+idx = find(stats(:,1) == max(stats(:,1)));
+sample = stats(idx,1) + stats(idx,2)*randn(1000,1);
+back_transformed = exp(sample);
+histogram(back_transformed,edges);
+%This is concatenating the months with the 
+label_1 = strcat(months{idx},' - Highest Mean');
+
+idx = find(stats(:,1) == min(stats(:,1)));
+sample = stats(idx,1) + stats(idx,2)*randn(1000,1);
+back_transformed = exp(sample);
+histogram(back_transformed,edges);
+%This is concatenating the months with the 
+label_2 = strcat(months{idx},' - Lowest Mean');
+
+
+idx = find(stats(:,2) == max(stats(:,2)));
+sample = stats(idx,1) + stats(idx,2)*randn(1000,1);
+back_transformed = exp(sample);
+histogram(back_transformed,edges);
+%This is concatenating the months with the 
+label_3 = strcat(months{idx},' - Highest Standard Deviation');
+
+%this top part sorts through the second column finding where the stats are
+%eual to the minimum ot the stats 
+idx = find(stats(:,2) == min(stats(:,2)));
+sample = stats(idx,1) + stats(idx,2)*randn(1000,1);
+% This does the exponent of the sample value to undo the natural log
+% function 
+back_transformed = exp(sample);
+histogram(back_transformed,edges);
+%This is concatenating the months with the label  
+label_4 = strcat(months{idx},' - Lowest Standard Deviation');
+
+legend(label_1, label_2, label_3, label_4)
+%The boxplot by default will plot each COLUMN as its own box and whiskers
+%plot, but we need it to plot the ROWS in the matrix, so adding the
+%apostrophy after "monthly_matrix" causes it to flip 
+hold off;
+
+figure; 
+boxplot(monthly_matrix','Labels',{'Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'})
+xlabel('Months','FontSize',14)
+ylabel('Monthly Natural Gas Prices ($/ft^3)','FontSize',14)
+
