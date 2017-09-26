@@ -1,0 +1,100 @@
+%Lecture10
+
+data=xlsread('catawba_data.xlsx');
+
+temps = data(:,4);
+flows = data(:,5);
+
+days=length(temps);
+
+W = zeros(days,1); 
+losses = zeros(days,1);
+%W(i) is the formula for W which is estimated river temperature in celcius
+%on a particular day
+for i = 1:days
+    
+    W(i) = (33.3/(1+exp(.15*(16.9-temps(i)))) + 127/flows(i));
+    
+    if W(i) > 37 && W(i) <= 40
+    losses(i) = .25*2000*24;
+    elseif W(i) > 40 && W(i) <= 42
+    losses(i) = .50*2000*24;
+    elseif W(i) > 42
+    losses(i) = 2000*24;
+    end
+        
+end
+%This is capacity times $100 per megawatt- then converts it to thousands of
+%dollars, so the y axis labels aren't ridiculous 
+losses_dollars = (losses*100)/1000; %covert losses to thousands of dollars
+
+annual_losses = zeros(41,1);
+
+for i = 1:41
+    annual_losses(i) = sum(losses_dollars((i-1)*365+1:(i-1)*365+365));
+end
+
+sorted_losses = sort(annual_losses);
+idx = round(.95*41);
+
+Var = sorted_losses(idx);
+
+cc_temps = data(:,4)+2
+c_losses = zeros(days,1)
+
+log_flows = log(flows);
+mu = mean(log_flows);
+st_f = std(log_flows);
+
+whitened_flows = (log_flows - mu)/st_f;
+
+%Now we want to add the climate change data 
+cc_mu = .9*mu;
+cc_st_f = 1.2*st_f;
+ 
+ %Now we have to reverse the whitened flows- this 
+ 
+ rv_whitened = (whitened_flows*cc_st_f) + cc_mu;
+ rv_log_flows = exp(rv_whitened);
+
+for i = 1:days
+    
+    W(i) = (33.3/(1+exp(.15*(16.9-cc_temps(i)))) + 127/flows(i));
+    
+    if W(i) > 37 && W(i) <= 40
+    c_losses(i) = .25*2000*24;
+    elseif W(i) > 40 && W(i) <= 42
+    c_losses(i) = .50*2000*24;
+    elseif W(i) > 42
+    c_losses(i) = 2000*24;
+    end
+        
+end
+
+cc_losses_dollars = (c_losses*100)/1000; %covert losses to thousands of dollars
+
+annual_c_losses = zeros(41,1);
+
+for i = 1:41
+    annual_c_losses(i) = sum(cc_losses_dollars((i-1)*365+1:(i-1)*365+365));
+end
+
+sorted_cc_losses = sort(annual_c_losses);
+idx = round(.95*41);
+Var2 = sorted_cc_losses(idx);
+
+
+ 
+ figure; 
+ hold on;
+%bins for the histograms  
+ bin = ceil(max(annual_c_losses)/100000)*100000;
+ edges = [0:10000:bin];
+ histogram(annual_losses,edges)
+ histogram(annual_c_losses,edges)
+ ylabel('Frequency','FontSize',14);
+ xlabel('Losses $1000s','FontSize',14);
+ legend('1970-2010','Climate Change');
+ 
+ 
+
