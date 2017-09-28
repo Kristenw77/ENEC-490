@@ -1,0 +1,55 @@
+%Lecture11
+
+% data=xlsread('temp_demand.xlsx');
+t_data = xlsread('temp_demand.xlsx','training');
+v_data = xlsread('temp_demand.xlsx','validation');
+t_temps = t_data(:,1);
+t_demand = t_data(:,3);
+v_temps = v_data(:,1);
+v_demand = v_data(:,3);
+
+t_CDD = max(t_temps - 65,0);
+t_HDD = max(65 - t_temps,0);
+v_CDD = max(v_temps - 65,0);
+v_HDD = max(65 - v_temps,0);
+
+%Creates a matrix with column 1 as ones, column 2 as the maximum
+%cooling degree days and column 3 as the maximum heating degree days
+
+X = [ones(length(t_CDD),1) t_CDD t_HDD];
+
+%This performs the regression, RESID is the output of all of the residuals 
+%The regression is using heating degree days AND cooling degree days as
+%independent variables and the demands as the dependent variables
+%What are BETA and SIGMA? 
+[BETA,SIGMA,RESID]=mvregress(X,t_demand);
+%Here I'll need to use the values from the regression to somehow calculate
+%the predicted values of demand from the HDD and CDD data in the validation
+%worksheet, then scatter those calculated values with the actual demand
+%values in the validation spreadsheet 
+
+predicted_demand = BETA(1)* ones(length(v_CDD),1) + BETA(2)*v_CDD + BETA(3)*v_HDD;  
+
+figure;
+hold on; 
+scatter(v_demand, predicted_demand) 
+
+
+%Calculate the R-Squared Value 
+
+mean_predicted = mean(predicted_demand)
+mean_actual = mean(v_demand)
+
+SST = sum((predicted_demand - mean_actual).^2);
+
+SSE = sum((predicted_demand - v_demand).^2);
+R_squared = 1 - (SSE/SST);
+
+%Calculate the Mean Squared Error 
+residuals = predicted_demand - v_demand;
+MSE = sum(residuals.^2)/length(v_demand);
+% Scatter plot of actual demand vs. residuals 
+figure; 
+scatter(v_demand,residuals);
+xlabel('Validation Actual Demand','FontSize',14); 
+ylabel('Residuals','FontSize',14);
