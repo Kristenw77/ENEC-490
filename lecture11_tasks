@@ -37,17 +37,19 @@ scatter(v_demand, predicted_demand)
 
 %Calculate the R-Squared Value 
 
-mean_predicted = mean(predicted_demand)
+
 mean_actual = mean(v_demand)
+k = predicted_demand - v_demand
+SSE = sum(k.^2);
 
-SST = sum((predicted_demand - mean_actual).^2);
-
-SSE = sum((predicted_demand - v_demand).^2);
+j = (v_demand - mean_actual);
+SST = sum(j.^2);
 R_squared = 1 - (SSE/SST);
 
 %Calculate the Mean Squared Error 
 residuals = predicted_demand - v_demand;
 MSE = sum(residuals.^2)/length(v_demand);
+RMSE = sqrt(MSE)
 % Scatter plot of actual demand vs. residuals 
 figure; 
 scatter(v_demand,residuals);
